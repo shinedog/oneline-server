@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+#
+# An example hook script to verify what is about to be committed.
+# Called by "git commit" with no arguments.
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+if [[ $BRANCH =~ "main" ]]; then
+  echo "Your commit was rejected - please create a branch for your change"
+  exit 1
+fi
+echo $BRANCH
+
+nix fmt -c .
+if [ $? -eq 0 ]; then
+  echo "Commit formatted correctly"
+else
+  echo "Commit rejected as it needed formatting. Please check format and commit again"
+  exit 1
+fi
+
+#Add project specific linting here
